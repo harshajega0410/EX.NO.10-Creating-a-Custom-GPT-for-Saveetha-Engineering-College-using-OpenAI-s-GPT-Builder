@@ -49,13 +49,232 @@ Click the “Create” (or “Save”) button in the top-right corner of the Bui
 •	Anyone with the link – to share with students and faculty of the department
 •	GPT Store (Public) – to make the GPT visible to all ChatGPT users
 Click “Publish”/“Update” to finish. Copy the generated link and share it with students through the college portal, WhatsApp group, or LMS.
-### SAMPLE INSTRUCTIONS (SYSTEM PROMPT) FOR THE GPT
-<br><img width="587" height="151" alt="image" src="https://github.com/user-attachments/assets/cd378cba-9488-4cc9-9974-99a44f3695f8" /></br>
-## SAMPLE OUTPUT SCREEN
-The screen below shows a sample conversation with the published “Saveetha Engineering College Assistant” Custom GPT, illustrating how it answers a student's admission query using the uploaded knowledge files.
-</br><img width="545" height="385" alt="image" src="https://github.com/user-attachments/assets/677bee25-a510-48db-824d-4dbb5795d610" /></br>
+### PROGRAM
+```
+import re
+import random
+
+
+knowledge_base = {
+
+    "greeting": {
+        "patterns": [
+            r"\bhi\b",
+            r"\bhello\b",
+            r"\bhey\b",
+            r"\bgood morning\b",
+            r"\bgood afternoon\b",
+            r"\bgood evening\b"
+        ],
+        "responses": [
+            "Hello! Welcome to the Saveetha Engineering College Admission Help Desk.",
+            "Hi! How can I help you with Saveetha Engineering College admissions?",
+            "Welcome! I can help you with courses, admissions, fees, placements and facilities."
+        ]
+    },
+
+    "courses": {
+        "patterns": [
+            r"\bcourses\b",
+            r"\bcourse\b",
+            r"\bb\.?tech\b",
+            r"\bprograms\b",
+            r"\bbranches\b",
+            r"\bdepartments\b"
+        ],
+        "responses": [
+            "Saveetha Engineering College offers B.Tech/B.E programmes in areas such as "
+            "Computer Science and Engineering, Information Technology, Electronics and "
+            "Communication Engineering, Electrical and Electronics Engineering and Mechanical Engineering.",
+            "The college offers undergraduate and postgraduate engineering programmes."
+        ]
+    },
+
+    "admission": {
+        "patterns": [
+            r"\badmission\b",
+            r"\bapply\b",
+            r"\bapplication\b",
+            r"\bhow.*join\b",
+            r"\bhow.*admission\b",
+            r"\bentrance\b"
+        ],
+        "responses": [
+            "You can apply for admission through the official Saveetha Engineering College "
+            "admission process. Visit www.saveetha.ac.in for the latest admission details.",
+            "For admission, check the eligibility requirements, complete the application "
+            "form, submit the required documents and follow the admission instructions "
+            "provided by the college."
+        ]
+    },
+
+    "eligibility": {
+        "patterns": [
+            r"\beligibility\b",
+            r"\bqualification\b",
+            r"\b12th\b",
+            r"\bhigher secondary\b",
+            r"\bmarks\b"
+        ],
+        "responses": [
+            "Eligibility requirements depend on the programme. For B.Tech/B.E admission, "
+            "students generally need to satisfy the required higher-secondary academic "
+            "qualifications. Please check the official college website for the latest criteria."
+        ]
+    },
+
+    "fees": {
+        "patterns": [
+            r"\bfees\b",
+            r"\bfee\b",
+            r"\bcost\b",
+            r"\btuition\b",
+            r"\bfee structure\b"
+        ],
+        "responses": [
+            "The fee structure varies depending on the course and admission category. "
+            "Please check the official Saveetha Engineering College website or contact "
+            "the admission office for the current fee details."
+        ]
+    },
+
+    "placements": {
+        "patterns": [
+            r"\bplacement\b",
+            r"\bplacements\b",
+            r"\bjob\b",
+            r"\bjobs\b",
+            r"\bcareer\b",
+            r"\bcompanies\b"
+        ],
+        "responses": [
+            "Saveetha Engineering College provides placement and career-support activities "
+            "for students. Placement opportunities depend on the department, eligibility "
+            "and recruitment company.",
+            "For the latest placement statistics and recruiting companies, please refer "
+            "to the official placement information of the college."
+        ]
+    },
+
+    "facilities": {
+        "patterns": [
+            r"\bfacilities\b",
+            r"\blibrary\b",
+            r"\blab\b",
+            r"\blaboratory\b",
+            r"\bhostel\b",
+            r"\bcampus\b"
+        ],
+        "responses": [
+            "The college provides facilities such as laboratories, library, classrooms, "
+            "campus infrastructure and student-support facilities.",
+            "Hostel and other campus facilities are available subject to the college rules "
+            "and availability."
+        ]
+    },
+
+    "location": {
+        "patterns": [
+            r"\bwhere\b",
+            r"\blocation\b",
+            r"\baddress\b",
+            r"\bcampus.*located\b",
+            r"\bcollege.*located\b"
+        ],
+        "responses": [
+            "Saveetha Engineering College is located in Chennai, Tamil Nadu. "
+            "For the exact address and directions, please visit www.saveetha.ac.in."
+        ]
+    },
+
+    "contact": {
+        "patterns": [
+            r"\bcontact\b",
+            r"\bphone\b",
+            r"\bemail\b",
+            r"\badmission office\b",
+            r"\bcontact details\b"
+        ],
+        "responses": [
+            "For the latest contact number, email address and admission-office details, "
+            "please visit the official website: www.saveetha.ac.in."
+        ]
+    },
+
+    "thanks": {
+        "patterns": [
+            r"\bthank you\b",
+            r"\bthanks\b",
+            r"\bthank\b"
+        ],
+        "responses": [
+            "You're welcome! Feel free to ask if you have more questions.",
+            "You're welcome! Have a great day."
+        ]
+    },
+
+    "goodbye": {
+        "patterns": [
+            r"\bbye\b",
+            r"\bgoodbye\b",
+            r"\bexit\b",
+            r"\bquit\b"
+        ],
+        "responses": [
+            "Thank you for using the Saveetha Engineering College Admission Chatbot. Goodbye!",
+            "Goodbye! Visit www.saveetha.ac.in for more information."
+        ]
+    }
+}
+
+
+
+def get_response(user_input):
+
+    user_input = user_input.lower().strip()
+
+    for category, data in knowledge_base.items():
+
+        for pattern in data["patterns"]:
+
+            if re.search(pattern, user_input):
+                return random.choice(data["responses"])
+
+    return (
+        "Sorry, I don't have information about that. "
+        "Please ask about courses, admission, eligibility, fees, "
+        "placements, facilities, location or contact details."
+    )
+
+
+
+print("=" * 60)
+print("   SAVEETHA ENGINEERING COLLEGE ADMISSION CHATBOT")
+print("=" * 60)
+
+print("\nBot: Hello! Welcome to the Saveetha Engineering College")
+print("     Admission Help Desk.")
+print("     I can help you with courses, admissions, fees,")
+print("     placements, facilities and contact details.")
+print("     Type 'bye' to exit.\n")
+
+
+while True:
+
+    user_input = input("You: ")
+
+    response = get_response(user_input)
+
+    print("Bot:", response)
+
+    if re.search(r"\b(bye|goodbye|exit|quit)\b",
+                 user_input.lower()):
+        break
+```
+
 ## OUTPUT
-A working Custom GPT named “Saveetha Engineering College Assistant” is created and published. When a user asks questions like “What courses does Saveetha offer?” or “How can I apply for B.Tech admission?”, the GPT replies with accurate information drawn from the uploaded college knowledge files, in a friendly and professional tone.
+<img width="1691" height="682" alt="image" src="https://github.com/user-attachments/assets/be5a5471-2805-41fc-9263-ef6bcfb53259" />
+
 ## RESULT
 Thus, a Custom GPT chatbot for Saveetha Engineering College was successfully designed, configured with knowledge files and instructions, tested, and published using OpenAI's GPT
 Builder.
